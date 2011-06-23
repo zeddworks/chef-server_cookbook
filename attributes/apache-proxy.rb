@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_attribute "apache2"
+#include_attribute "apache2"
 include_attribute "chef-server"
 
 default['chef_server']['doc_root'] = "#{node['languages']['ruby']['gems_dir']}/gems/chef-server-webui-#{node['chef_packages']['chef']['version']}/public"
