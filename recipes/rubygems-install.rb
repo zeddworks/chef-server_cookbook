@@ -83,8 +83,8 @@ else
 
 end
 
-include_recipe "zlib"
-include_recipe "xml"
+#include_recipe "zlib"
+#include_recipe "xml"
 
 server_gems = %w{ chef-server-api chef-solr chef-expander }
 server_services = %w{ chef-solr chef-expander chef-server }
@@ -100,10 +100,9 @@ server_gems.each do |gem|
   end
 end
 
-zw_rvm_wrapper "update rvm wrappers" do
+rvm_wrapper "update rvm wrappers" do
   ruby_string "ree-1.8.7-2011.03"
   action :create
-  provider "zw_rvm_wrapper"
 end
 
 chef_dirs = [
