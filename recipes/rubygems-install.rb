@@ -43,6 +43,15 @@ when "ubuntu"
   end
 
   include_recipe "java"
+
+
+  apt_repository "rabbitmq" do
+    uri "http://www.rabbitmq.com/debian"
+    components ["testing","main"]
+    key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
+    action :add
+  end
+
   include_recipe "chef-server::rabbitmq"
   include_recipe "gecode"
 
@@ -89,6 +98,12 @@ server_gems.each do |gem|
   gem_package gem do
     version node['chef_packages']['chef']['version']
   end
+end
+
+zw_rvm_wrapper "update rvm wrappers" do
+  ruby_string "ree-1.8.7-2011.03"
+  action :create
+  provider "zw_rvm_wrapper"
 end
 
 chef_dirs = [
@@ -220,6 +235,15 @@ when "init"
     service "#{svc}" do
       supports :status => true
       action [ :enable, :start ]
+    end
+  end
+
+  #chef-server-webui seems to have issues starting the first time on RHEL
+  if node['platform']['redhat']
+    if node['chef_server']['webui_enabled']
+      service "chef-server-webui" do
+      action :restart
+      end
     end
   end
 

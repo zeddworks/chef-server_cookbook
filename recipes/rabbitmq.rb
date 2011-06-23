@@ -20,24 +20,11 @@
 # limitations under the License.
 #
 
-def debian_before_squeeze?
-  platform?("debian") && (node.platform_version.to_f < 5.0 || (node.platform_version.to_f == 5.0 && node.platform_version !~ /.*sid/ ))
-end
-
-if (platform?("ubuntu") && node.platform_version.to_f <= 9.10) || debian_before_squeeze?
-  include_recipe("erlang")
-
-  rabbitmq_dpkg_path = ::File.join(Chef::Config[:file_cache_path], "/", "rabbitmq-server_1.7.2-1_all.deb")
-
-  remote_file(rabbitmq_dpkg_path) do
-    checksum "ea2bbbb41f6d539884498bbdb5c7d3984643127dbdad5e9f7c28ec9df76b1355"
-    source "http://mirror.rabbitmq.com/releases/rabbitmq-server/v1.7.2/rabbitmq-server_1.7.2-1_all.deb"
-  end
-
-  dpkg_package(rabbitmq_dpkg_path) do
-    source rabbitmq_dpkg_path
-    version '1.7.2-1'
-    action :install
+case node[:platform]
+when "redhat"
+  execute "install rabbitmq-server rpm from URL" do
+    command "rpm -Uhv http://www.rabbitmq.com/releases/rabbitmq-server/v2.4.1/rabbitmq-server-2.4.1-1.noarch.rpm"
+    action :run
   end
 else
   package "rabbitmq-server"
