@@ -25,6 +25,7 @@ when "redhat"
   execute "install rabbitmq-server rpm from URL" do
     command "rpm -Uhv http://www.rabbitmq.com/releases/rabbitmq-server/v2.4.1/rabbitmq-server-2.4.1-1.noarch.rpm"
     action :run
+    not_if "rpm -q rabbitmq-server"
   end
 else
   package "rabbitmq-server"
