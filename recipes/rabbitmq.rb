@@ -28,7 +28,11 @@ when "redhat"
     not_if "rpm -q rabbitmq-server"
   end
 else
-  package "rabbitmq-server"
+  execute "install rabbitmq-server deb from URL" do
+    command "wget http://www.rabbitmq.com/releases/rabbitmq-server/v2.5.1/rabbitmq-server_2.5.1-1_all.deb; dpkg -i rabbitmq-server_2.5.1-1_all.deb"
+    cwd "/tmp"
+    not_if "dpkg-query -s rabbitmq-server"
+  end
 end
 
 service "rabbitmq-server" do
