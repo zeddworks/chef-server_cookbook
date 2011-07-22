@@ -102,7 +102,7 @@ end
 
 rvm_wrapper "update rvm wrappers" do
   ruby_string "ree-1.8.7-2011.03"
-  action :create
+  binaries server_services
 end
 
 chef_dirs = [
@@ -220,6 +220,10 @@ when "init"
     file "/etc/init.d/#{svc}" do
       content init_content
       mode 0755
+    end
+
+    execute "#{svc}-rvm-wrapper" do
+      command "sed -i 's|/usr/bin/#{svc}|/usr/local/rvm/wrappers/default/#{svc}|' /etc/init.d/#{svc}"
     end
 
     file "/etc/#{conf_dir}/#{svc}" do
